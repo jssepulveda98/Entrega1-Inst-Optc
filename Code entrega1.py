@@ -10,10 +10,3 @@ import scipy as sp
 #Funciones
 
 
-
-<<<<<<< Updated upstream
-dadadada
-
-aaaaaaaaaaaaaaaaaaaaaaaa
-=======
->>>>>>> Stashed changes
