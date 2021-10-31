@@ -3,9 +3,17 @@ import matplotlib.pyplot as plt
 import scipy as sp
 
 
-kjjuj
+#Dimensiones y constantes
 
 
+
+#Funciones
+
+
+
+<<<<<<< Updated upstream
 dadadada
 
 aaaaaaaaaaaaaaaaaaaaaaaa
+=======
+>>>>>>> Stashed changes
