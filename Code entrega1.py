@@ -3,17 +3,17 @@ import matplotlib.pyplot as plt
 from scipy.ndimage import gaussian_filter
 import cv2
 
-#Dimensiones y constantes
-ABC=np.loadtxt('a.txt',delimiter=',', dtype=complex)
+#Dimensions and constants
+#ABC=np.loadtxt('a.txt',delimiter=',', dtype=complex)
 
-A=[]
+#A=[]
 
-print(ABC[0:1])
+#print(ABC[0:1])
 
-ABC=np.fft.ifft(ABC)
+#ABC=np.fft.ifft(ABC)
 
 
-#Funciones
+#Functions
 
 def f4G(Imagen):
     Imagenf=np.fft.fft2(Imagen)
@@ -29,8 +29,8 @@ def f4G(Imagen):
 imagen= cv2.imread("b.png")
 
 #plt.imshow(ABC)
-#plt.imshow(f4G(imagen))
-
+plt.imshow(f4G(imagen))
+plt.imsave("image.png",f4G(imagen))
 
 plt.show()
 
