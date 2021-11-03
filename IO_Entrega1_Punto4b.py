@@ -26,9 +26,9 @@ def transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v):
 	x=np.arange(-M,M)
 	y=np.arange(-N,N)
 	x,y=np.meshgrid(x,y)
-	lim=250**2   #radio de 25um
-	a=12*deltau
-	b=120*deltav
+	lim=200**2   #radius of 200um
+	a=13*deltau  #position of object
+	b=122*deltav
 	Obj=(deltau*x+a)**2 + (deltav*y+b)**2
 	Obj[np.where(Obj<=lim)]=0
 	Obj[np.where(Obj>lim)]=1
