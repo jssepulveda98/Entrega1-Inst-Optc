@@ -31,17 +31,9 @@ def transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v):
 	t2_matrix[np.where(t2_matrix<=lim)]=1
 	t2_matrix[np.where(t2_matrix>lim)]=0
 
-	t2=t2_matrix*UF1
+	t2=t2_matrix*UF1          
 
-	I3=(np.abs(t2_matrix)**2) 
-	plt.figure(4) 
-	plt.imshow(I3, extent=[-u,u,-v,v])
-	plt.title('Transmittance in Fourier Plane')
-	plt.ylabel('[um]')
-	plt.xlabel('[um]')
-	plt.imsave("t.png",I3, cmap='gray')                  
-
-	return t2
+	return t2,t2_matrix
 
 
 def secondlens(t2, deltau, deltav, w_length, f_length):
@@ -87,7 +79,7 @@ deltaxi=(w_length*f_length)/(2*M*deltau)
 deltaeta=(w_length*f_length)/(2*N*deltav)
 
 #Size of planes
-u=M*deltau
+u=M*deltau  #plane size of 2*u*2*v
 v=N*deltav
 
 xi=M*deltaxi
@@ -97,7 +89,7 @@ eta=N*deltaeta
 #Image formation
 t1= cv2.imread("cameraman.png",0)
 UF1=firstlens(t1, deltaxprim, deltayprim, w_length, f_length)
-t2=transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v)
+t2,t2_matrix=transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v)
 UF2=secondlens(t2, deltau, deltav, w_length, f_length)
 
 #Fourier transform of the image
@@ -108,12 +100,10 @@ angle1=np.angle(UF1)                           #Phase
 I2=(np.abs(UF2)**2)                            #Intensity
 angle2=np.angle(UF2)                           #Phase
 
-#Fourier transform of the image multiplied by the trnasmittance t2
-I3=(np.abs(t2)**2)                             #Intensity
-anglet2=np.angle(t2)                           #Phase
 
 
 #Plot
+#Fourier Transform of image
 plt.figure(1) 
 plt.imshow(I1, extent=[-u,u,-v,v])
 plt.title('Fourier plane')
@@ -121,16 +111,30 @@ plt.ylabel('[um]')
 plt.xlabel('[um]')
 plt.imsave("Fourier plane.png",I1, cmap='gray')
 
+#Output image
 plt.figure(2) 
 plt.imshow(I2, extent=[-xi,xi,-eta,eta])
-plt.title('Image')
+plt.title('Output image')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
-plt.imsave("Image.png",I2, cmap='gray')
+plt.imsave("Output image.png",I2, cmap='gray')
 
+#Transmittance t2
+I3=(np.abs(t2_matrix)**2) 
 plt.figure(3) 
 plt.imshow(I3, extent=[-u,u,-v,v])
 plt.title('Transmittance in Fourier Plane')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
-plt.imsave("t2.png",I3, cmap='gray')
+plt.imsave("filter.png",I3, cmap='gray')    
+
+#Fourier transform of the image multiplied by the transmittance t2
+Ia=(np.abs(t2_matrix)**2) 
+Ib=np.log(np.abs(UF1)**2) 
+I4=Ia*Ib
+plt.figure(4) 
+plt.imshow(I4, extent=[-u,u,-v,v])
+plt.title('Transmittance in Fourier Plane')
+plt.ylabel('[um]')
+plt.xlabel('[um]')
+plt.imsave("FTfiltered.png",I4, cmap='gray')   
