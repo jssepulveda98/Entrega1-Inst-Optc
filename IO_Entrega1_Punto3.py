@@ -21,11 +21,12 @@ def firstlens(t1, deltaxprim, deltayprim, w_length, f_length):
 def transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v):
 	"""
 	Transmittance in the Fourier Plane to manipulate the frequencies of the image
+	In this case a low-pass filter
 	"""
 	x=np.arange(-M,M)
 	y=np.arange(-N,N)
 	x,y=np.meshgrid(x,y)
-	lim=5000000
+	lim=1500**2   #radio de 1500um
 	t2_matrix=(deltau*x)**2 + (deltav*y)**2
 	t2_matrix[np.where(t2_matrix<=lim)]=1
 	t2_matrix[np.where(t2_matrix>lim)]=0
@@ -33,7 +34,7 @@ def transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v):
 	t2=t2_matrix*UF1
 
 	I3=(np.abs(t2_matrix)**2) 
-	plt.figure(3) 
+	plt.figure(4) 
 	plt.imshow(I3, extent=[-u,u,-v,v])
 	plt.title('Transmittance in Fourier Plane')
 	plt.ylabel('[um]')
@@ -51,7 +52,6 @@ def secondlens(t2, deltau, deltav, w_length, f_length):
 	"""
 
 	Uf2=(1/(1j*w_length*f_length))*np.fft.fft2(t2*deltau*deltav)
-	#Uf2=np.fft.fftshift(Uf2)
 
 	return Uf2
 
@@ -65,26 +65,26 @@ deltau=pixel size Fourier plane
 deltav=pixel size Fourier plane
 deltaxprim=pixel size transmittance (t1) plane
 deltayprim=pixel size transmittance (t1) plane
-deltaxi=pixel size image plane
-deltaeta=pixel size image plane
+deltaxi=pixel size image plane (output)
+deltaeta=pixel size image plane (output)
 M*2=number of pixels in the x' axis
 N*2=number of pixels in the y' axis
 M*2xN*2=number of pixels entrance plane
 """
 
-M=256 #Number of pixels=M*2 (along one axis number of pixels=512)
+M=256 #Number of pixels=M*2 (number of pixels along one axis=512)
 N=256 #Number of pixels=N*2
 f_length=50000  #(50mm)
-w_length=0.633   #All units in um
-deltaxprim=2.99 
-deltayprim=2.99
+w_length=0.633  #(633nm orange/red) #All units in um
+deltaxprim=2.5 
+deltayprim=2.5
 
 #Constrains of pixel sizes do to the Fourier transform discretization
-deltau=(w_length*f_length)/(M*deltaxprim) 
-deltav=(w_length*f_length)/(N*deltayprim)
+deltau=(w_length*f_length)/(2*M*deltaxprim) 
+deltav=(w_length*f_length)/(2*N*deltayprim)
 
-deltaxi=(w_length*f_length)/(M*deltau)
-deltaeta=(w_length*f_length)/(N*deltav)
+deltaxi=(w_length*f_length)/(2*M*deltau)
+deltaeta=(w_length*f_length)/(2*N*deltav)
 
 #Size of planes
 u=M*deltau
@@ -92,6 +92,7 @@ v=N*deltav
 
 xi=M*deltaxi
 eta=N*deltaeta
+
 
 #Image formation
 t1= cv2.imread("cameraman.png",0)
