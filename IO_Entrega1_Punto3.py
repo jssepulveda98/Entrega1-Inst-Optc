@@ -25,7 +25,7 @@ def secondlens(Uf1, deltau, deltav, w_length, f_length):
 	"""
 
 	Uf2=(1/(1j*w_length*f_length))*np.fft.fft2(Uf1*deltau*deltav)
-	Uf2=np.fft.fftshift(Uf2)
+	#Uf2=np.fft.fftshift(Uf2)
 
 	return Uf2
 
@@ -47,7 +47,7 @@ M*2xN*2=number of pixels entrance plane
 
 M=256 #Number of pixels=M*2 (along one axis number of pixels=512)
 N=256 #Number of pixels=N*2
-f_length=5000  #(50mm)
+f_length=50000  #(50mm)
 w_length=0.633   #All units in um
 deltaxprim=2.99 
 deltayprim=2.99
@@ -58,12 +58,12 @@ deltav=(w_length*f_length)/(M*deltayprim)
 deltaxi=(w_length*f_length)/(M*deltau)
 deltaeta=(w_length*f_length)/(M*deltav)
 
-t1= cv2.imread("cameraman.png")
+t1= cv2.imread("cameraman.png",0)
 UF1=firstlens(t1, deltaxprim, deltayprim, w_length, f_length)
 
 UF2=secondlens(UF1, deltau, deltav, w_length, f_length)
 
-I1=(np.abs(UF1)**2)                            #Intensity
+I1=np.log((np.abs(UF1)**2))                             #Intensity
 angle1=np.angle(UF1)                           #Phase
 
 I2=(np.abs(UF2)**2)                            #Intensity
@@ -76,15 +76,15 @@ xi=M*deltaxi
 eta=N*deltaeta
 
 plt.figure(1) 
-plt.imshow(I1,cmap='gray', extent=[-u,u,-v,v])
+plt.imshow(I1)
 plt.title('Fourier plane')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
-plt.savefig("Fourier plane.png",dpi=500)
+plt.imsave("Fourier plane.png",I1, cmap='gray')
 
 plt.figure(2) 
-plt.imshow(I2,cmap='gray', extent=[-u,u,-v,v])
+plt.imshow(I2)
 plt.title('Image')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
-plt.savefig("Image.png",dpi=500)
+plt.imsave("Image.png",I2, cmap='gray')
