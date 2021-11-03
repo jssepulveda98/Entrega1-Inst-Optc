@@ -21,19 +21,20 @@ def firstlens(t1, deltaxprim, deltayprim, w_length, f_length):
 def transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v):
 	"""
 	Transmittance in the Fourier Plane to manipulate the frequencies of the image
-	In this case a low-pass filter
+	In this case to filter out the frequencies corresponding to the lines of the image
 	"""
 	x=np.arange(-M,M)
 	y=np.arange(-N,N)
 	x,y=np.meshgrid(x,y)
-	lim=1500**2   #radio de 1500um
-	t2_matrix=(deltau*x)**2 + (deltav*y)**2
-	t2_matrix[np.where(t2_matrix<=lim)]=1
-	t2_matrix[np.where(t2_matrix>lim)]=1
+	lim=250**2   #radio de 25um
+	Obj=(deltau*x)**2 + (deltav*y)**2
+	Obj[np.where(Obj<=lim)]=0
+	Obj[np.where(Obj>lim)]=1
 
-	t2=t2_matrix*UF1          
 
-	return t2,t2_matrix
+	t2=Obj*UF1          
+
+	return t2,Obj
 
 
 def secondlens(t2, deltau, deltav, w_length, f_length):
