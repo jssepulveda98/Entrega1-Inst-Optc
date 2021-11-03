@@ -25,7 +25,7 @@ def secondlens(Uf1, w_length, f_length):
 	"""
 
 	Uf2=(1/(1j*w_length*f_length))*np.fft.fft2(Uf1)
-	Uf2=np.fft.fftshift(Uf2)
+	#Uf2=np.fft.fftshift(Uf2)
 
 	return Uf2
 
@@ -47,11 +47,11 @@ M*2xN*2=number of pixels entrance plane
 
 M=256 #Number of pixels=M*2 (along one axis number of pixels=512)
 N=256 #Number of pixels=N*2
-f_length=5000  #(50mm)
+f_length=50000  #(50mm)
 w_length=0.633   #All units in um
 
 
-t1= cv2.imread("cameraman.png")
+t1= cv2.imread("cameraman.png",0)
 UF1=firstlens(t1, w_length, f_length)
 
 UF2=secondlens(UF1, w_length, f_length)
@@ -64,15 +64,15 @@ angle2=np.angle(UF2)                           #Phase
 
 
 plt.figure(1) 
-plt.imshow(I1,cmap='gray')
+plt.imshow(I1)
 plt.title('Fourier plane')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
-plt.savefig("Fourier plane2.png",dpi=500)
+plt.imsave("Fourier plane2.png",I1, cmap='gray')
 
 plt.figure(2) 
-plt.imshow(I2,cmap='gray')
+plt.imshow(I2)
 plt.title('Image')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
-plt.savefig("Image2.png",dpi=500)
+plt.imsave("Image2.png",I2, cmap='gray')
