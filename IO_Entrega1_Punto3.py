@@ -100,6 +100,11 @@ angle1=np.angle(UF1)                           #Phase
 I2=(np.abs(UF2)**2)                            #Intensity
 angle2=np.angle(UF2)                           #Phase
 
+#Transmittance t2
+I3=(np.abs(t2_matrix)**2)                      #Intensity
+
+#Fourier transform of the image multiplied by the transmittance t2 
+I4=I3*I1                                       #Intensity
 
 
 #Plot
@@ -120,7 +125,6 @@ plt.xlabel('[um]')
 plt.imsave("Output image.png",I2, cmap='gray')
 
 #Transmittance t2
-I3=(np.abs(t2_matrix)**2) 
 plt.figure(3) 
 plt.imshow(I3, extent=[-u,u,-v,v])
 plt.title('Transmittance in Fourier Plane')
@@ -129,9 +133,6 @@ plt.xlabel('[um]')
 plt.imsave("filter.png",I3, cmap='gray')    
 
 #Fourier transform of the image multiplied by the transmittance t2
-Ia=(np.abs(t2_matrix)**2) 
-Ib=np.log(np.abs(UF1)**2) 
-I4=Ia*Ib
 plt.figure(4) 
 plt.imshow(I4, extent=[-u,u,-v,v])
 plt.title('Transmittance in Fourier Plane')
