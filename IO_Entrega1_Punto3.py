@@ -114,7 +114,7 @@ plt.imshow(I1, extent=[-u,u,-v,v])
 plt.title('Fourier plane')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
-plt.imsave("Fourier plane.png",I1, cmap='gray')
+plt.imsave("Fourier planeP3.png",I1, cmap='gray')
 
 #Output image
 plt.figure(2) 
@@ -122,7 +122,7 @@ plt.imshow(I2, extent=[-xi,xi,-eta,eta])
 plt.title('Output image')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
-plt.imsave("Output image.png",I2, cmap='gray')
+plt.imsave("Output imageP3.png",I2, cmap='gray')
 
 #Transmittance t2
 plt.figure(3) 
@@ -130,7 +130,7 @@ plt.imshow(I3, extent=[-u,u,-v,v])
 plt.title('Transmittance in Fourier Plane')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
-plt.imsave("filter.png",I3, cmap='gray')    
+plt.imsave("filterP3.png",I3, cmap='gray')    
 
 #Fourier transform of the image multiplied by the transmittance t2
 plt.figure(4) 
@@ -138,4 +138,4 @@ plt.imshow(I4, extent=[-u,u,-v,v])
 plt.title('Transmittance in Fourier Plane')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
-plt.imsave("FTfiltered.png",I4, cmap='gray')   
+plt.imsave("FTfilteredP3.png",I4, cmap='gray')   
