@@ -48,7 +48,7 @@ M*2xN*2=number of pixels entrance plane
 M=256 #Number of pixels=M*2 (along one axis number of pixels=512)
 N=256 #Number of pixels=N*2
 f_length=50000  #(50mm)
-w_length=0.633   #All units in um
+w_length=0.633  #(633nm) #All units in um
 
 
 t1= cv2.imread("cameraman.png",0)
@@ -56,7 +56,7 @@ UF1=firstlens(t1, w_length, f_length)
 
 UF2=secondlens(UF1, w_length, f_length)
 
-I1=(np.abs(UF1)**2)                            #Intensity
+I1=np.log((np.abs(UF1)**2))                            #Intensity
 angle1=np.angle(UF1)                           #Phase
 
 I2=(np.abs(UF2)**2)                            #Intensity
