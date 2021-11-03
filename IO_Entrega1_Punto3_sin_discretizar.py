@@ -19,7 +19,7 @@ def firstlens(t1, w_length, f_length):
 
 def secondlens(Uf1, w_length, f_length):
 	"""
-	Fourier transform done by the first lens
+	Fourier transform done by the second lens
 	Incident optical field: plane and monochromatic wave
 	Lens bigger than transmittance: pupil function equals 1
 	"""
@@ -28,6 +28,8 @@ def secondlens(Uf1, w_length, f_length):
 	#Uf2=np.fft.fftshift(Uf2)
 
 	return Uf2
+
+
 
 
 
