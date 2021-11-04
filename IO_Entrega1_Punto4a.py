@@ -21,26 +21,19 @@ def firstlens(t1, deltaxprim, deltayprim, w_length, f_length):
 def transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v):
 	"""
 	Transmittance in the Fourier Plane to manipulate the frequencies of the image
-	In this case to filter out the frequencies corresponding to the lines of the image
+	In this case a low-pass filter
 	"""
 	x=np.arange(-M,M)
 	y=np.arange(-N,N)
 	x,y=np.meshgrid(x,y)
-	lim=500**2   #radius of 250um
-	a=13*deltau  #position of object
-	b=122*deltav
-	Obj1=(deltau*x+a)**2 + (deltav*y+b)**2
-	Obj1[np.where(Obj1<=lim)]=0
-	Obj1[np.where(Obj1>lim)]=1
+	lim=1500**2   #radio de 1500um
+	t2_matrix=(deltau*x)**2 + (deltav*y)**2
+	t2_matrix[np.where(t2_matrix<=lim)]=1
+	t2_matrix[np.where(t2_matrix>lim)]=0
 
-	Obj2=(deltau*x-a)**2 + (deltav*y-b)**2
-	Obj2[np.where(Obj2<=lim)]=0
-	Obj2[np.where(Obj2>lim)]=1
+	t2=t2_matrix*UF1          
 
-
-	t2=Obj1*Obj2*UF1          
-
-	return t2,Obj1,Obj2
+	return t2,t2_matrix
 
 
 def secondlens(t2, deltau, deltav, w_length, f_length):
@@ -71,8 +64,8 @@ N*2=number of pixels in the y' axis
 M*2xN*2=number of pixels entrance plane
 """
 
-M=384 #Number of pixels=M*2 (number of pixels along one axis=768)
-N=384 #Number of pixels=N*2
+M=256 #Number of pixels=M*2 (number of pixels along one axis=512)
+N=256 #Number of pixels=N*2
 f_length=50000  #(50mm)
 w_length=0.633  #(633nm orange/red) #All units in um
 deltaxprim=2.5 
@@ -94,9 +87,9 @@ eta=N*deltaeta
 
 
 #Image formation
-t1= cv2.imread("b.png",0)
+t1= cv2.imread("cameraman.png",0)
 UF1=firstlens(t1, deltaxprim, deltayprim, w_length, f_length)
-t2,Obj1,Obj2=transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v)
+t2,t2_matrix=transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v)
 UF2=secondlens(t2, deltau, deltav, w_length, f_length)
 
 #Fourier transform of the image
@@ -108,13 +101,10 @@ I2=(np.abs(UF2)**2)                            #Intensity
 angle2=np.angle(UF2)                           #Phase
 
 #Transmittance t2
-I3=(np.abs(Obj1)**2)                      #Intensity
-
-#Transmittance t2
-I4=(np.abs(Obj2)**2)                      #Intensity
+I3=(np.abs(t2_matrix)**2)                      #Intensity
 
 #Fourier transform of the image multiplied by the transmittance t2 
-I5=I3*I4*I1                                       #Intensity
+I4=I3*I1                                       #Intensity
 
 
 #Plot
@@ -124,7 +114,7 @@ plt.imshow(I1, extent=[-u,u,-v,v])
 plt.title('Fourier plane')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
-plt.imsave("Fourier planeP4b.png",I1, cmap='gray')
+plt.imsave("Fourier planeP3.png",I1, cmap='gray')
 
 #Output image
 plt.figure(2) 
@@ -132,7 +122,7 @@ plt.imshow(I2, extent=[-xi,xi,-eta,eta])
 plt.title('Output image')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
-plt.imsave("Output imageP4b.png",I2, cmap='gray')
+plt.imsave("Output imageP3.png",I2, cmap='gray')
 
 #Transmittance t2
 plt.figure(3) 
@@ -140,20 +130,12 @@ plt.imshow(I3, extent=[-u,u,-v,v])
 plt.title('Transmittance in Fourier Plane')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
-plt.imsave("filterP4b.png",I3, cmap='gray')    
+plt.imsave("filterP3.png",I3, cmap='gray')    
 
-#Transmittance t2
-plt.figure(3) 
+#Fourier transform of the image multiplied by the transmittance t2
+plt.figure(4) 
 plt.imshow(I4, extent=[-u,u,-v,v])
 plt.title('Transmittance in Fourier Plane')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
-plt.imsave("filter2P4b.png",I4, cmap='gray')   
-
-#Fourier transform of the image multiplied by the transmittance t2
-plt.figure(4) 
-plt.imshow(I5, extent=[-u,u,-v,v])
-plt.title('Transmittance in Fourier Plane')
-plt.ylabel('[um]')
-plt.xlabel('[um]')
-plt.imsave("FTfilteredP4b.png",I5, cmap='gray')   
+plt.imsave("FTfilteredP3.png",I4, cmap='gray')   
