@@ -112,6 +112,7 @@ I3=(np.abs(t2_matrix)**2)                      #Intensity
 
 #Fourier transform of the image multiplied by the transmittance t2 
 I4=I3*I1                                       #Intensity
+angle4=np.angle(t2)                           #Phase
 
 
 #Plot
@@ -175,3 +176,10 @@ plt.title('Transmittance in Fourier Plane')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
 plt.imsave("FTfilteredP4a.png",I4, cmap='gray')   
+
+plt.figure(9) 
+plt.imshow(angle4, extent=[-u,u,-v,v])
+plt.title('Transmittance in Fourier Plane')
+plt.ylabel('[um]')
+plt.xlabel('[um]')
+plt.imsave("FTfilteredP4a phase.png",angle4, cmap='gray')   
