@@ -29,10 +29,15 @@ def transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v):
 	lim=200**2   #radius of 200um
 	a=13*deltau  #position of object
 	b=122*deltav
-	Obj=(deltau*x+a)**2 + (deltav*y+b)**2
-	Obj[np.where(Obj<=lim)]=0
-	Obj[np.where(Obj>lim)]=1
+	Obj1=(deltau*x+a)**2 + (deltav*y+b)**2
+	Obj1[np.where(Obj1<=lim)]=0
+	Obj1[np.where(Obj1>lim)]=1
 
+	Obj2=(deltau*x-a)**2 + (deltav*y-b)**2
+	Obj2[np.where(Obj2<=lim)]=0
+	Obj2[np.where(Obj2>lim)]=1
+
+	Obj=Obj1+Obj2
 
 	t2=Obj*UF1          
 
@@ -92,7 +97,7 @@ eta=N*deltaeta
 #Image formation
 t1= cv2.imread("b.png",0)
 UF1=firstlens(t1, deltaxprim, deltayprim, w_length, f_length)
-t2,t2_matrix=transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v)
+t2,Obj=transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v)
 UF2=secondlens(t2, deltau, deltav, w_length, f_length)
 
 #Fourier transform of the image
@@ -104,7 +109,7 @@ I2=(np.abs(UF2)**2)                            #Intensity
 angle2=np.angle(UF2)                           #Phase
 
 #Transmittance t2
-I3=(np.abs(t2_matrix)**2)                      #Intensity
+I3=(np.abs(Obj)**2)                      #Intensity
 
 #Fourier transform of the image multiplied by the transmittance t2 
 I4=I3*I1                                       #Intensity
