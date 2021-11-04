@@ -122,7 +122,7 @@ plt.ylabel('[um]')
 plt.xlabel('[um]')
 plt.imsave("aIntensity.png",I0, cmap='gray')
 
-plt.figure(1) 
+plt.figure(2) 
 plt.imshow(angle0, extent=[-u,u,-v,v])
 plt.title('Fourier plane')
 plt.ylabel('[um]')
@@ -131,23 +131,37 @@ plt.imsave("aPhase.png",angle0, cmap='gray')
 
 
 #Fourier Transform of image
-plt.figure(1) 
+plt.figure(3) 
 plt.imshow(I1, extent=[-u,u,-v,v])
 plt.title('Fourier plane')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
 plt.imsave("Fourier planeP4a.png",I1, cmap='gray')
 
+plt.figure(4) 
+plt.imshow(angle1, extent=[-u,u,-v,v])
+plt.title('Fourier plane')
+plt.ylabel('[um]')
+plt.xlabel('[um]')
+plt.imsave("Fourier planeP4a phase.png",angle1, cmap='gray')
+
 #Output image
-plt.figure(2) 
+plt.figure(5) 
 plt.imshow(I2, extent=[-xi,xi,-eta,eta])
 plt.title('Output image')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
 plt.imsave("Output imageP4a.png",I2, cmap='gray')
 
+plt.figure(6) 
+plt.imshow(angle2, extent=[-xi,xi,-eta,eta])
+plt.title('Output image phase')
+plt.ylabel('[um]')
+plt.xlabel('[um]')
+plt.imsave("Output imageP4a phase.png",angle2, cmap='gray')
+
 #Transmittance t2
-plt.figure(3) 
+plt.figure(7) 
 plt.imshow(I3, extent=[-u,u,-v,v])
 plt.title('Transmittance in Fourier Plane')
 plt.ylabel('[um]')
@@ -155,7 +169,7 @@ plt.xlabel('[um]')
 plt.imsave("filterP4a.png",I3, cmap='gray')    
 
 #Fourier transform of the image multiplied by the transmittance t2
-plt.figure(4) 
+plt.figure(8) 
 plt.imshow(I4, extent=[-u,u,-v,v])
 plt.title('Transmittance in Fourier Plane')
 plt.ylabel('[um]')
