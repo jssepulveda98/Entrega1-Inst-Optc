@@ -68,8 +68,8 @@ M=360 #Number of pixels=M*2 (number of pixels along one axis=720)
 N=360 #Number of pixels=N*2
 f_length=50000  #(50mm)
 w_length=0.633  #(633nm orange/red) #All units in um
-deltaxprim=2.5 
-deltayprim=2.5
+deltaxprim=2 
+deltayprim=2
 
 #Constrains of pixel sizes do to the Fourier transform discretization
 deltau=(w_length*f_length)/(2*M*deltaxprim) 
