@@ -26,9 +26,9 @@ def transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v):
 	x=np.arange(-M,M)
 	y=np.arange(-N,N)
 	x,y=np.meshgrid(x,y)
-	lim=1500**2   #radio de 1500um
+	lim=500**2   #radius of 500um
 	t2_matrix=(deltau*x)**2 + (deltav*y)**2
-	t2_matrix[np.where(t2_matrix<=lim)]=1
+	t2_matrix[np.where(t2_matrix<=lim)]=0
 	t2_matrix[np.where(t2_matrix>lim)]=1
 
 	t2=t2_matrix*UF1          
