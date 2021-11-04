@@ -29,7 +29,7 @@ def transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v):
 	lim=1500**2   #radio de 1500um
 	t2_matrix=(deltau*x)**2 + (deltav*y)**2
 	t2_matrix[np.where(t2_matrix<=lim)]=1
-	t2_matrix[np.where(t2_matrix>lim)]=0
+	t2_matrix[np.where(t2_matrix>lim)]=1
 
 	t2=t2_matrix*UF1          
 
@@ -64,8 +64,8 @@ N*2=number of pixels in the y' axis
 M*2xN*2=number of pixels entrance plane
 """
 
-M=256 #Number of pixels=M*2 (number of pixels along one axis=512)
-N=256 #Number of pixels=N*2
+M=360 #Number of pixels=M*2 (number of pixels along one axis=720)
+N=360 #Number of pixels=N*2
 f_length=50000  #(50mm)
 w_length=0.633  #(633nm orange/red) #All units in um
 deltaxprim=2.5 
@@ -87,10 +87,15 @@ eta=N*deltaeta
 
 
 #Image formation
-t1= cv2.imread("cameraman.png",0)
+
+data=np.loadtxt('a.txt', dtype=np.complex128, delimiter=',')
 UF1=firstlens(t1, deltaxprim, deltayprim, w_length, f_length)
 t2,t2_matrix=transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v)
 UF2=secondlens(t2, deltau, deltav, w_length, f_length)
+
+print("shape of array", data.shape)
+
+print("First 5 rows:\n", data[:5])
 
 #Fourier transform of the image
 I1=np.log((np.abs(UF1)**2))                    #Intensity
