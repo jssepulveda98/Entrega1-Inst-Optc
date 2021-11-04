@@ -88,14 +88,14 @@ eta=N*deltaeta
 
 #Image formation
 
-data=np.loadtxt('a.txt', dtype=np.complex128, delimiter=',')
+t1=np.loadtxt('a.txt', dtype=np.complex128, delimiter=',')
 UF1=firstlens(t1, deltaxprim, deltayprim, w_length, f_length)
 t2,t2_matrix=transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v)
 UF2=secondlens(t2, deltau, deltav, w_length, f_length)
 
-print("shape of array", data.shape)
+print("shape of array", t1.shape)
 
-print("First 5 rows:\n", data[:5])
+print("First 5 rows:\n", t1[:5])
 
 #Fourier transform of the image
 I1=np.log((np.abs(UF1)**2))                    #Intensity
@@ -119,7 +119,7 @@ plt.imshow(I1, extent=[-u,u,-v,v])
 plt.title('Fourier plane')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
-plt.imsave("Fourier planeP3.png",I1, cmap='gray')
+plt.imsave("Fourier planeP4a.png",I1, cmap='gray')
 
 #Output image
 plt.figure(2) 
@@ -127,7 +127,7 @@ plt.imshow(I2, extent=[-xi,xi,-eta,eta])
 plt.title('Output image')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
-plt.imsave("Output imageP3.png",I2, cmap='gray')
+plt.imsave("Output imageP4a.png",I2, cmap='gray')
 
 #Transmittance t2
 plt.figure(3) 
@@ -135,7 +135,7 @@ plt.imshow(I3, extent=[-u,u,-v,v])
 plt.title('Transmittance in Fourier Plane')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
-plt.imsave("filterP3.png",I3, cmap='gray')    
+plt.imsave("filterP4a.png",I3, cmap='gray')    
 
 #Fourier transform of the image multiplied by the transmittance t2
 plt.figure(4) 
@@ -143,4 +143,4 @@ plt.imshow(I4, extent=[-u,u,-v,v])
 plt.title('Transmittance in Fourier Plane')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
-plt.imsave("FTfilteredP3.png",I4, cmap='gray')   
+plt.imsave("FTfilteredP4a.png",I4, cmap='gray')   
