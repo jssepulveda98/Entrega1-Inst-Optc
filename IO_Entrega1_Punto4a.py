@@ -94,8 +94,10 @@ t2,t2_matrix=transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v
 UF2=secondlens(t2, deltau, deltav, w_length, f_length)
 
 print("shape of array", t1.shape)
-
 print("First 5 rows:\n", t1[:5])
+
+I0=np.log((np.abs(t1)**2))                    #Intensity
+angle0=np.angle(t1)                           #Phase
 
 #Fourier transform of the image
 I1=np.log((np.abs(UF1)**2))                    #Intensity
@@ -113,6 +115,21 @@ I4=I3*I1                                       #Intensity
 
 
 #Plot
+plt.figure(1) 
+plt.imshow(I0, extent=[-u,u,-v,v])
+plt.title('Fourier plane')
+plt.ylabel('[um]')
+plt.xlabel('[um]')
+plt.imsave("aIntensity.png",I0, cmap='gray')
+
+plt.figure(1) 
+plt.imshow(angle0, extent=[-u,u,-v,v])
+plt.title('Fourier plane')
+plt.ylabel('[um]')
+plt.xlabel('[um]')
+plt.imsave("aPhase.png",angle0, cmap='gray')
+
+
 #Fourier Transform of image
 plt.figure(1) 
 plt.imshow(I1, extent=[-u,u,-v,v])
