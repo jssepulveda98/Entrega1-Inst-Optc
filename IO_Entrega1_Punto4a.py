@@ -27,27 +27,26 @@ def transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v):
 	y=np.arange(-N,N)
 	x,y=np.meshgrid(x,y)
 	lim=500**2   #radius of 500um
-	t2_matrix=(deltau*x)**2 + (deltav*y)**2
-	t2_matrix[np.where(t2_matrix<=lim)]=(np.pi/2)
-	t2_matrix[np.where(t2_matrix>lim)]=0
+	t2_matrix=((deltau*x)**2 + (deltav*y)**2)+(0j)
+	t2_matrix[np.where(t2_matrix<=lim)]=np.exp(1j*(np.pi/2))
+	t2_matrix[np.where(t2_matrix>lim)]=1
 
-	print("t2matrix",t2_matrix[:500])
-	print("UF1",UF1[:5])
+	#print("UF1",UF1[:5])
 
-	phase=np.angle(UF1)  #Fourier Transform Phase
+	#phase=np.imag(UF1)  #Fourier Transform Phase
 
-	print("UF1 phase",phase[:5])
+	#print("UF1 phase",phase[:5])
 
-	t2phase=t2_matrix+phase
+	#t2phase=t2_matrix+phase
 
-	print("t2 phase",t2phase[:5])
+	#print("t2 phase",t2phase[:5])
 
-	t2=(np.real(UF1))+(1j*t2phase)   
+	#t2=(np.real(UF1))+((np.imag(UF1)+t2_matrix)*1j)
+	t2=UF1*t2_matrix 
 
-	print("phaset2",np.angle(t2[:5]))
-	print("ampt2",np.real(t2[:5]))      
+	#print("phaset2",t2[:5])   
 
-	return t2phase,t2_matrix
+	return t2,t2_matrix
 
 
 def secondlens(t2, deltau, deltav, w_length, f_length):
@@ -58,6 +57,7 @@ def secondlens(t2, deltau, deltav, w_length, f_length):
 	"""
 
 	Uf2=(1/(1j*w_length*f_length))*np.fft.fft2(t2*deltau*deltav)
+	#Uf2=np.fft.fftshift(Uf2)
 
 	return Uf2
 
@@ -107,10 +107,8 @@ UF1=firstlens(t1, deltaxprim, deltayprim, w_length, f_length)
 t2,t2_matrix=transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v)
 UF2=secondlens(t2, deltau, deltav, w_length, f_length)
 
-print("shape of array", t1.shape)
-print("First 5 rows:\n", t1[:5])
-print("a",np.real(t1[:5]))
-print("b",np.angle(t1[:5]))
+#print("shape of array", t1.shape)
+#print("First 5 rows:\n", t1[:5])
 
 
 I0=np.log((np.abs(t1)**2))                    #Intensity
