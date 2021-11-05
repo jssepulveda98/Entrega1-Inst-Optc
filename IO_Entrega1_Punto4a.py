@@ -21,7 +21,7 @@ def firstlens(t1, deltaxprim, deltayprim, w_length, f_length):
 def transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v):
 	"""
 	Transmittance in the Fourier Plane to manipulate the frequencies of the image
-	In this case a phase contrast filter
+	In this case a phase contrast filter of phase=pi/2
 	"""
 	x=np.arange(-M,M)
 	y=np.arange(-N,N)
@@ -31,20 +31,8 @@ def transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v):
 	t2_matrix[np.where(t2_matrix<=lim)]=np.exp(1j*(np.pi/2))
 	t2_matrix[np.where(t2_matrix>lim)]=1
 
-	#print("UF1",UF1[:5])
 
-	#phase=np.imag(UF1)  #Fourier Transform Phase
-
-	#print("UF1 phase",phase[:5])
-
-	#t2phase=t2_matrix+phase
-
-	#print("t2 phase",t2phase[:5])
-
-	#t2=(np.real(UF1))+((np.imag(UF1)+t2_matrix)*1j)
-	t2=UF1*t2_matrix 
-
-	#print("phaset2",t2[:5])   
+	t2=UF1*t2_matrix  
 
 	return t2,t2_matrix
 
@@ -57,7 +45,6 @@ def secondlens(t2, deltau, deltav, w_length, f_length):
 	"""
 
 	Uf2=(1/(1j*w_length*f_length))*np.fft.fft2(t2*deltau*deltav)
-	#Uf2=np.fft.fftshift(Uf2)
 
 	return Uf2
 
@@ -124,13 +111,15 @@ angle2=np.angle(UF2)                           #Phase
 
 #Transmittance t2
 I3=(np.abs(t2_matrix)**2)                      #Intensity
+angle3=np.angle(t2_matrix)                     #Phase
 
 #Fourier transform of the image multiplied by the transmittance t2 
-I4=I3*I1                                       #Intensity
+I4=I3*I1                                      #Intensity
 angle4=np.angle(t2)                           #Phase
 
 
 #Plot
+#Input image
 plt.figure(1) 
 plt.imshow(I0, extent=[-u,u,-v,v])
 plt.title('Fourier plane')
@@ -178,11 +167,11 @@ plt.imsave("Output imageP4a phase.png",angle2, cmap='gray')
 
 #Transmittance t2
 plt.figure(7) 
-plt.imshow(I3, extent=[-u,u,-v,v])
+plt.imshow(angle3, extent=[-u,u,-v,v])
 plt.title('Transmittance in Fourier Plane')
 plt.ylabel('[um]')
 plt.xlabel('[um]')
-plt.imsave("filterP4a.png",I3, cmap='gray')    
+plt.imsave("filterP4a.png",angle3, cmap='gray')    
 
 #Fourier transform of the image multiplied by the transmittance t2
 plt.figure(8) 
