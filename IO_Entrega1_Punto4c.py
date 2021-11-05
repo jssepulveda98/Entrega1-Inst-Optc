@@ -27,25 +27,6 @@ def secondlens(t2, deltau, deltav, w_length, f_length):
 
 	return Uf2
 
-   
-def Window(Imagen,Clue):
-    """
-    Creating a window to get the same pixelsize for both images, the 
-    Clue is ubicated in the middle
-    
-    """
-    
-    TamIm=np.shape(Imagen)
-    XIm, YIm=TamIm[0],TamIm[1]
-    TamClue=np.shape(Clue)
-    XC, YC=TamClue[0],TamClue[1]
-    Window=np.zeros(TamIm)
-    Window[int((XIm/2)-(XC/2) +1):int((XIm/2) +(XC/2) +1),int((YIm/2)-(YC/2) +1):int((YIm/2) +(YC/2) +1)]=Clue
-    
-    
-    return Window
-    
-
 
 def Correlate2DF(A,B):
     """
@@ -55,6 +36,9 @@ def Correlate2DF(A,B):
     Returns
     -------
     C : Crossed Correlation matrix
+
+    Search for presence or absence of B image on A image, 
+
 
     """
     
@@ -73,8 +57,10 @@ def Correlate2DF(A,B):
     
     B=firstlens(B,2.99,2.99,0.633,50000)
     
-    Autocorr=B*B.conjugate()
+    Autocorr=B*B.conjugate()    #Autocorrelation of the Clue
     Autocorr=secondlens(Autocorr,deltau,deltav,0.633,50000)
+    
+    #plot the autocorrelation 
     plt.figure() 
     plt.imshow((np.log(np.abs(Autocorr)**2)), extent=[-u,u,-v,v],cmap="gray")
     plt.title('Auto-correlation')
@@ -82,17 +68,24 @@ def Correlate2DF(A,B):
     plt.xlabel('[um]')
     plt.imsave("Auto-correlation.png",(np.log(np.abs(Autocorr)**2)), cmap='gray')
    
-    for pixelX in np.arange(1,int(TAX -TBX)-10):
-        for pixelY in np.arange(1,int(TAY -TBY)-10):
+    for pixelX in np.arange(1,int(TAX -TBX)-10): 
+        for pixelY in np.arange(1,int(TAY -TBY)-10): 
+            
+            #Walk through the image taking frames with the same pixelsize
+            #of the clue
             
             PorA=A[pixelX:TBX+pixelX:1,pixelY:TBY+pixelY:1]
             TransFA=firstlens(PorA,2.99,2.99,0.633,50000)
             c = TransFA*B.conjugate()
             C = secondlens(c,deltau,deltav,0.633,50000)
+            #Gets the cross correlation between the frame and the clue
             
             comparison = abs(C-Autocorr) <=0.05* np.ones(np.shape(C)) 
             
-            if comparison.all():
+            if comparison.all(): 
+                #When the correlation is almost the autocorrelation
+                #Plot the cross correlation
+                
                 Coord=[pixelX,pixelY]
                 plt.figure() 
                 plt.imshow((np.log(np.abs(C)**2)), extent=[-u,u,-v,v],cmap="gray")
@@ -115,7 +108,10 @@ def LocateWaldo(Image,Clue):
 
     Returns
     -------
-    Graph
+    Graph the image with the frame of maximum correlation
+    enhanced
+    
+
 
     """
     Coord=Correlate2DF(Image,Clue)
