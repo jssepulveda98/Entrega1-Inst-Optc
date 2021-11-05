@@ -80,30 +80,54 @@ def Correlate2DF(A,B):
     plt.title('Auto-correlation')
     plt.ylabel('[um]')
     plt.xlabel('[um]')
+    plt.imsave("Auto-correlation.png",(np.log(np.abs(Autocorr)**2)), cmap='gray')
    
-    for pixelX in np.arange(1,int(TAX -TBX)-10):
-        for pixelY in np.arange(1,int(TAY -TBY)-10):
+    for pixelX in np.arange(1300,1500):#1,int(TAX -TBX)-10):
+        for pixelY in np.arange(300,500):#1,int(TAY -TBY)-10):
             
             PorA=A[pixelX:TBX+pixelX:1,pixelY:TBY+pixelY:1]
             TransFA=firstlens(PorA,2.99,2.99,0.633,50000)
             c = TransFA*B.conjugate()
             C = secondlens(c,deltau,deltav,0.633,50000)
             
-            comparison = abs(C-Autocorr) <=1.5* np.ones(np.shape(C)) 
-            print(comparison)
+            comparison = abs(C-Autocorr) <=0.05* np.ones(np.shape(C)) 
+            
             if comparison.all():
-                print(pixelX,pixelY)
+                Coord=[pixelX,pixelY]
                 plt.figure() 
                 plt.imshow((np.log(np.abs(C)**2)), extent=[-u,u,-v,v],cmap="gray")
-                plt.title('Crossed correlation')
+                plt.title('Cross-correlation')
                 plt.ylabel('[um]')
                 plt.xlabel('[um]')
+                plt.imsave("Cross-correlation.png",(np.log(np.abs(C)**2)), cmap='gray')
              
     
     
-    return C
+    return Coord
 
 
+def LocateWaldo(Image,Clue):
+    """
+    
+    ----------
+    Image: The big array where the clue is
+    Clue
+
+    Returns
+    -------
+    Graph
+
+    """
+    Coord=Correlate2DF(Image,Clue)
+    
+    Mask=np.zeros(np.shape(Image))
+    Mask[Coord[0]:Coord[0]+64,Coord[1]:Coord[1]+64]=300*np.ones(np.shape(Clue))
+    
+    plt.figure()
+    plt.imshow(Image-Mask,cmap="gray")
+    plt.imsave("Waldo.png",Image-Mask, cmap='gray')
+    
+    
 
     
 #Image reading
@@ -114,7 +138,7 @@ clue=cv2.imread("c_clue.jpeg",0)
 
 
 
-Correlate2DF(imagen,clue)
+LocateWaldo(imagen,clue)
 #plot
 
 #plt.imshow(np.log(np.abs(Correlate2DF(imagen,clue))**2),cmap="gray")
