@@ -28,14 +28,14 @@ def transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v):
 	x,y=np.meshgrid(x,y)
 	lim=500**2   #radius of 500um
 	t2_matrix=(deltau*x)**2 + (deltav*y)**2
-	t2_matrix[np.where(t2_matrix<=lim)]=np.pi/2
+	t2_matrix[np.where(t2_matrix<=lim)]=(np.pi/2)
 	t2_matrix[np.where(t2_matrix>lim)]=1
 
 	phase=np.angle(UF1)  #Fourier Transform Phase
 
-	t2phase=t2_matrix*phase
+	t2phase=t2_matrix+phase
 
-	t2=np.abs(UF1)*np.exp(1j*t2phase)         
+	t2=(np.real(UF1))+(1j*t2phase)         
 
 	return t2phase,t2_matrix
 
@@ -99,6 +99,7 @@ UF2=secondlens(t2, deltau, deltav, w_length, f_length)
 
 print("shape of array", t1.shape)
 print("First 5 rows:\n", t1[:5])
+
 
 I0=np.log((np.abs(t1)**2))                    #Intensity
 angle0=np.angle(t1)                           #Phase
