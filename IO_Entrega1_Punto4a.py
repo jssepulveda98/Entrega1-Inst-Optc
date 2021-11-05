@@ -26,7 +26,7 @@ def transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v):
 	x=np.arange(-M,M)
 	y=np.arange(-N,N)
 	x,y=np.meshgrid(x,y)
-	lim=50**2   #radius of 500um
+	lim=150**2   #radius of 150um
 	t2_matrix=((deltau*x)**2 + (deltav*y)**2)+(0j)
 	t2_matrix[np.where(t2_matrix<=lim)]=np.exp(1j*(np.pi/2))
 	t2_matrix[np.where(t2_matrix>lim)]=1
@@ -69,8 +69,8 @@ M=360 #Number of pixels=M*2 (number of pixels along one axis=720)
 N=360 #Number of pixels=N*2
 f_length=50000  #(50mm)
 w_length=0.633  #(633nm orange/red) #All units in um
-deltaxprim=2 
-deltayprim=2
+deltaxprim=2.5 
+deltayprim=2.5
 
 #Constrains of pixel sizes do to the Fourier transform discretization
 deltau=(w_length*f_length)/(2*M*deltaxprim) 
