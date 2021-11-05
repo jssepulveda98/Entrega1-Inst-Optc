@@ -21,19 +21,23 @@ def firstlens(t1, deltaxprim, deltayprim, w_length, f_length):
 def transmittanceFP(UF1, w_length, f_length, deltau, deltav, M, N, u, v):
 	"""
 	Transmittance in the Fourier Plane to manipulate the frequencies of the image
-	In this case a low-pass filter
+	In this case a phase contrast filter
 	"""
 	x=np.arange(-M,M)
 	y=np.arange(-N,N)
 	x,y=np.meshgrid(x,y)
 	lim=500**2   #radius of 500um
 	t2_matrix=(deltau*x)**2 + (deltav*y)**2
-	t2_matrix[np.where(t2_matrix<=lim)]=1*(np.exp(1j*(np.pi/2)))
+	t2_matrix[np.where(t2_matrix<=lim)]=np.pi/2
 	t2_matrix[np.where(t2_matrix>lim)]=1
 
-	t2=t2_matrix*UF1          
+	phase=np.angle(UF1)  #Fourier Transform Phase
 
-	return t2,t2_matrix
+	t2phase=t2_matrix*phase
+
+	t2=np.abs(UF1)*np.exp(1j*t2phase)         
+
+	return t2phase,t2_matrix
 
 
 def secondlens(t2, deltau, deltav, w_length, f_length):
