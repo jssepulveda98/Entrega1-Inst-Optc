@@ -11,7 +11,7 @@ def firstlens(t1, deltaxprim, deltayprim, w_length, f_length):
 	"""
 
 	Uf1=(1/(1j*w_length*f_length))*np.fft.fft2(t1*deltaxprim*deltayprim)
-	#Uf1=np.fft.fftshift(Uf1)
+	Uf1=np.fft.fftshift(Uf1)
 
 	return Uf1
 
@@ -23,7 +23,7 @@ def secondlens(t2, deltau, deltav, w_length, f_length):
 	"""
 
 	Uf2=(1/(1j*w_length*f_length))*np.fft.fft2(t2*deltau*deltav)
-	#Uf2=np.fft.fftshift(Uf2)
+	Uf2=np.fft.fftshift(Uf2)
 
 	return Uf2
 
@@ -42,6 +42,7 @@ def Window(Imagen,Clue):
     Window=np.zeros(TamIm)
     Window[int((XIm/2)-(XC/2) +1):int((XIm/2) +(XC/2) +1),int((YIm/2)-(YC/2) +1):int((YIm/2) +(YC/2) +1)]=Clue
     
+    
     return Window
     
 
@@ -57,43 +58,77 @@ def Correlate2DF(A,B):
 
     """
     
-    B=Window(A,B)
+    #B=Window(A,B)
     
-    A=firstlens(A,2.99,2.99,0.633,50000)
+    TamA=np.shape(A)
+    TAX,TAY=TamA[0],TamA[1]
+    TamB=np.shape(B)
+    TBX,TBY=TamB[0],TamB[1]
+    
+    deltau=(0.633*50000)/(2*840*2.99) 
+    deltav=(0.633*50000)/(2*1300*2.99)
+    u=840*deltau  #plane size of 2*u*2*v
+    v=1300*deltav
+    
+    
     B=firstlens(B,2.99,2.99,0.633,50000)
     
-    c = A*B.conjugate()
-    C = secondlens(c,2.99,2.99,0.633,50000)
-    C = np.fft.fftshift(C)
+    Autocorr=B*B.conjugate()
+    Autocorr=secondlens(Autocorr,deltau,deltav,0.633,50000)
+    plt.figure() 
+    plt.imshow((np.log(np.abs(Autocorr)**2)), extent=[-u,u,-v,v],cmap="gray")
+    plt.title('Auto-correlation')
+    plt.ylabel('[um]')
+    plt.xlabel('[um]')
+    plt.imsave("Auto-correlation.png",(np.log(np.abs(Autocorr)**2)), cmap='gray')
+   
+    for pixelX in np.arange(1,int(TAX -TBX)-10):
+        for pixelY in np.arange(1,int(TAY -TBY)-10):
+            
+            PorA=A[pixelX:TBX+pixelX:1,pixelY:TBY+pixelY:1]
+            TransFA=firstlens(PorA,2.99,2.99,0.633,50000)
+            c = TransFA*B.conjugate()
+            C = secondlens(c,deltau,deltav,0.633,50000)
+            
+            comparison = abs(C-Autocorr) <=0.05* np.ones(np.shape(C)) 
+            
+            if comparison.all():
+                Coord=[pixelX,pixelY]
+                plt.figure() 
+                plt.imshow((np.log(np.abs(C)**2)), extent=[-u,u,-v,v],cmap="gray")
+                plt.title('Cross-correlation')
+                plt.ylabel('[um]')
+                plt.xlabel('[um]')
+                plt.imsave("Cross-correlation.png",(np.log(np.abs(C)**2)), cmap='gray')
+             
     
-    return C
-
-
-def LocateWaldo( orig, clue ):
-    """
-    Search for the maximum point of correlation 
-
-    """
-    corr = Correlate2DF(orig, clue)
-    V,H = corr.shape
-    v,h = divmod( abs(corr).argmax(), H )
-    return v,h
-
-
-def Mask(Orig,Clue):
-    """
-    Generates a mask in the pointof maximun correlation in order to enhance Waldo
     
+    return Coord
+
+
+def LocateWaldo(Image,Clue):
     """
     
-    coord=LocateWaldo(Orig,Clue)
-    Xce,Yce=coord[0],coord[1]
-    TamC=np.shape(Clue)
-    Xc,Yc=TamC[0],TamC[1]
-    Mask=np.zeros(np.shape(Orig))
-    Mask[int(Xce-(Xc/2)+1):int(Xce+(Xc/2)+1),int(Yce-(Yc/2)+1):int(Yce+(Yc/2)+1)]=200*np.ones(TamC)
+    ----------
+    Image: The big array where the clue is
+    Clue
+
+    Returns
+    -------
+    Graph
+
+    """
+    Coord=Correlate2DF(Image,Clue)
     
-    return Mask 
+    Mask=np.zeros(np.shape(Image))
+    Mask[Coord[0]:Coord[0]+64,Coord[1]:Coord[1]+64]=300*np.ones(np.shape(Clue))
+    
+    plt.figure()
+    plt.imshow(Image-Mask,cmap="gray")
+    plt.imsave("Waldo.png",Image-Mask, cmap='gray')
+    
+    
+
     
 #Image reading
 
@@ -103,10 +138,8 @@ clue=cv2.imread("c_clue.jpeg",0)
 
 
 
+LocateWaldo(imagen,clue)
 
-#plot
-
-plt.imshow(imagen -Mask(imagen,clue),cmap="gray")
 
 
 
