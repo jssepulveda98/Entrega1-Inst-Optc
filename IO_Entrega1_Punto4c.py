@@ -82,8 +82,8 @@ def Correlate2DF(A,B):
     plt.xlabel('[um]')
     plt.imsave("Auto-correlation.png",(np.log(np.abs(Autocorr)**2)), cmap='gray')
    
-    for pixelX in np.arange(1300,1500):#1,int(TAX -TBX)-10):
-        for pixelY in np.arange(300,500):#1,int(TAY -TBY)-10):
+    for pixelX in np.arange(1,int(TAX -TBX)-10):
+        for pixelY in np.arange(1,int(TAY -TBY)-10):
             
             PorA=A[pixelX:TBX+pixelX:1,pixelY:TBY+pixelY:1]
             TransFA=firstlens(PorA,2.99,2.99,0.633,50000)
@@ -139,9 +139,7 @@ clue=cv2.imread("c_clue.jpeg",0)
 
 
 LocateWaldo(imagen,clue)
-#plot
 
-#plt.imshow(np.log(np.abs(Correlate2DF(imagen,clue))**2),cmap="gray")
 
 
 
